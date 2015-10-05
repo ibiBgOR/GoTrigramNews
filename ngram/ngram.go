@@ -22,11 +22,14 @@ import (
 
 func BuildNGram(sequence string, n int) []string {
 	var result []string
+	// iterate over the sequence string char by char
 	for seqPosition := 0; seqPosition+n-1 < len(sequence); seqPosition += 1 {
 		var ngram []string
+		// build the specific ngram out of n chars
 		for ncounter := 0; ncounter < n; ncounter += 1 {
 			ngram = append(ngram, string(sequence[seqPosition+ncounter]))
 		}
+		// one string with n chars
 		result = append(result, strings.Join(ngram, ""))
 	}
 	return result
