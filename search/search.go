@@ -1,8 +1,8 @@
 package main
 
 import (
+	"GoTrimapNews/ngram"
 	"fmt"
-	"org.hwr/GoTrimapNews/ngram"
 )
 
 func main() {
