@@ -1,12 +1,8 @@
 # GoTrimapNews
-Implementation of trimap for news for the AI course of the HWR Berlin
+Implementation of trimap for news for the AI course at the Berlin School of Economics and Law
 
 ## Working on GoTrimapNews
 checkout this project in your go-workspace
 
-		git checkout [URL] $GOPATH/src/GoTrimapNews
+		go get github.com/ibiBgOR/GoTrimapNews
 
-or respectively
-
-		cd $GOPATH/src
-		git checkout [URL]
