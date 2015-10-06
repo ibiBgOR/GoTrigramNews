@@ -22,5 +22,9 @@ import (
 )
 
 func main() {
-	fmt.Println(ngram.BuildNGram("Hello World", 3))
+	// Read a News Title from stdin
+	var input string
+	fmt.Scanln(&input)
+	// Print Ngrams for given News Title
+	fmt.Println(ngram.BuildNGram(input, 3))
 }
