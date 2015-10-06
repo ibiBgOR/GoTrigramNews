@@ -18,8 +18,49 @@ package data
 
 import (
 	"github.com/gchaincl/dotsql"
-	"github.com/gchaincl/gotic/fs"
+	//	"github.com/gchaincl/gotic/fs"
+	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
 )
+
+// create database
+func createDatabase(user string, passwd string) {
+	db, err := sql.Open("mysql", user+passwd+"@/test")
+	if err != nil {
+		panic(err)
+	}
+
+	dot, err := dotsql.LoadFromFile("queries.sql")
+	if err != nil {
+		panic(err)
+	}
+
+	// TODO remove for persistent database
+	_, err = dot.Exec(db, "drop-database")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = dot.Exec(db, "create-database")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = dot.Exec(db, "use-database")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = dot.Exec(db, "create-titles-table")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = dot.Exec(db, "create-trigrams-table")
+	if err != nil {
+		panic(err)
+	}
+}
 
 // getIds(trigram string) ids []int -> returns ids with this trigram
 func getIds(trigram string) []int {
