@@ -17,17 +17,26 @@ limitations under the License.
 package data
 
 import (
-	"io/ioutil"
+	"github.com/gchaincl/dotsql"
+	"github.com/gchaincl/gotic/fs"
 )
 
-func checkRead(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-func ReadData() string {
-	data, err := ioutil.ReadFile("data/inputText.txt")
-	checkRead(err)
-	return string(data)
+// getIds(trigram string) ids []int -> returns ids with this trigram
+func getIds(trigram string) []int {
+	return []int{}
 }
 
+// getNewsTitle(id int) string -> returns news title with this id
+func getNewsTitle(id int) string {
+	return ""
+}
+
+// putTrigram(trigram string, id int) -> saves trigram with this id
+func putTrigram(trigram string, id int) {
+	return
+}
+
+// postNews(title string) id int -> saves a new news title, returns id
+func postNews(title string) int {
+	return 0
+}
