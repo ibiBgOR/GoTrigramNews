@@ -17,8 +17,8 @@ limitations under the License.
 package main
 
 import (
-	"GoTrimapNews/ngram"
 	"fmt"
+	"github.com/ibiBgOR/GoTrimapNews/ngram"
 )
 
 func main() {
