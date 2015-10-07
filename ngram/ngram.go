@@ -1,5 +1,5 @@
 /*
-Copyright 2015 Oscar Ruckdaeschel, Janik Schmidt, Jonathan Kuhse.
+Copyright 2015 Oscar Ruckdeschel, Janik Schmidt, Jonathan Kuhse.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
