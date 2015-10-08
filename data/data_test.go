@@ -16,7 +16,9 @@ limitations under the License.
 
 package data
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestCreateDatabase(t *testing.T) {
 	createDatabase("root", "")
@@ -26,6 +28,8 @@ func TestTitle(t *testing.T) {
 	cases := []string{
 		"Hello world",
 		"This is a News Title",
+		"",
+		"»",
 	}
 	for _, c := range cases {
 		newsID := postNews(c)
@@ -43,6 +47,8 @@ func TestTrigrams(t *testing.T) {
 	}{
 		{1, []string{"Hel", "ell", "llo"}},
 		{2, []string{"Tes", "est"}},
+		{1, []string{"Wie", "ied", "ede", "der"}}, //duplicate id -> no problem (?)
+		// {1, []string{"Hel", "ell", "llo"}}, TODO: better error handling (here: duplicate entry)
 	}
 	for _, c := range cases {
 		for _, tri := range c.trigrams {
