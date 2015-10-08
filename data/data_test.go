@@ -35,3 +35,32 @@ func TestTitle(t *testing.T) {
 		}
 	}
 }
+
+func TestTrigrams(t *testing.T) {
+	cases := []struct {
+		id       int
+		trigrams []string
+	}{
+		{1, []string{"Hel", "ell", "llo"}},
+		{2, []string{"Tes", "est"}},
+	}
+	for _, c := range cases {
+		for _, tri := range c.trigrams {
+			putTrigram(tri, c.id)
+		}
+
+		for _, tri := range c.trigrams {
+			ids := getIdsOfTrigram(tri)
+			contains := false
+			for _, id := range ids {
+				if id == c.id {
+					contains = true
+				}
+			}
+			if !contains {
+				t.Errorf("%q with id %q is not in %q", tri, string(c.id), ids)
+			}
+		}
+
+	}
+}

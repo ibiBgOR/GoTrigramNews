@@ -66,9 +66,36 @@ func createDatabase(user string, passwd string) {
 	}
 }
 
-// getIds(trigram string) ids []int -> returns ids with this trigram
-func getIds(trigram string) []int {
-	return []int{}
+// getIds(trigram string) ids []int -> returns news-ids with this trigram
+func getIdsOfTrigram(trigram string) []int {
+	db, err := sql.Open("mysql", user+passwd+"@/trigramnews")
+	if err != nil {
+		panic(err)
+	}
+
+	dot, err := dotsql.LoadFromFile("queries.sql")
+	if err != nil {
+		panic(err)
+	}
+
+	rows, err := dot.Query(db, "select-titleids-from-trigram", trigram)
+	if err != nil {
+		panic(err)
+	}
+
+	var ids []int
+	for rows.Next() {
+		var id_string string
+		if err := rows.Scan(&id_string); err != nil {
+			panic(err)
+		}
+		id, err := strconv.Atoi(id_string)
+		if err != nil {
+			panic(err)
+		}
+		ids = append(ids, id)
+	}
+	return ids
 }
 
 // getNewsTitle(id int) string -> returns news title with this id
@@ -99,7 +126,20 @@ func getNewsTitle(id int) string {
 
 // putTrigram(trigram string, id int) -> saves trigram with this id
 func putTrigram(trigram string, id int) {
-	return
+	db, err := sql.Open("mysql", user+passwd+"@/trigramnews")
+	if err != nil {
+		panic(err)
+	}
+
+	dot, err := dotsql.LoadFromFile("queries.sql")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = dot.Exec(db, "insert-trigram", id, trigram)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // postNews(title string) id int -> saves a new news title, returns id

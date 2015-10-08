@@ -21,9 +21,9 @@ CREATE TABLE IF NOT EXISTS trigrams (
 INSERT INTO titles (title) VALUES(?);
 -- name: insert-trigram
 INSERT INTO trigrams (id, trigram) VALUES(?, ?);
+-- name: select-titleids-from-trigram
+SELECT id FROM trigrams WHERE trigram = ?;
 -- name: select-title
 SELECT title FROM titles WHERE id = ? LIMIT 1;
 -- name: select-titleid-by-name
 SELECT id FROM titles WHERE title = ? LIMIT 1;
--- name: select-trigram
-SELECT id FROM titles WHERE trigram = ?;
