@@ -21,7 +21,8 @@ import (
 )
 
 func TestCreateDatabase(t *testing.T) {
-	createDatabase("root", "")
+	InitializeDatabase("root", "")
+	createDatabase()
 }
 
 func TestTitle(t *testing.T) {

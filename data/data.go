@@ -24,56 +24,90 @@ import (
 	"strconv"
 )
 
-var user = "root"
-var passwd = ""
+var sqlConnStr string = ""
+var databaseName string = "trigramnews"
 
-// drop and creates a new database
-func createDatabase(user string, passwd string) {
-	db, err := sql.Open("mysql", user+passwd+"@/")
-	if err != nil {
-		panic(err)
+// We save the SQL Statements in a map to execute by name and handle the exception in one place!
+type stmtFunc func(string) sql.Result
+
+var database *sql.DB
+
+var statementsFile *dotsql.DotSql;
+
+func InitializeDatabase(user string, passwd string) {
+	sqlConnStr = user
+	if passwd != "" {
+		sqlConnStr += ":" + passwd
 	}
+	sqlConnStr += "@/"
+
+	loadStatements()
+}
+
+func loadStatements() {
 	dot, err := dotsql.LoadFromFile("queries.sql")
 	if err != nil {
 		panic(err)
 	}
-	// TODO remove for persistent database
-	_, err = dot.Exec(db, "drop-database")
-	if err != nil {
-		panic(err)
-	}
-	_, err = dot.Exec(db, "create-database")
-	if err != nil {
-		panic(err)
-	}
-	_, err = dot.Exec(db, "use-database")
-	if err != nil {
-		panic(err)
-	}
-	_, err = dot.Exec(db, "create-titles-table")
-	if err != nil {
-		panic(err)
-	}
-	_, err = dot.Exec(db, "create-trigrams-table")
+	statementsFile = dot
+}
+
+func runSql(sql string, args ...interface{}) {
+	_, err := statementsFile.Exec(database, sql, args...)
 	if err != nil {
 		panic(err)
 	}
 }
 
+func querySql(sql string, args ...interface{}) *sql.Rows {
+	result, err := statementsFile.Query(database, sql, args...)
+	if err != nil {
+		panic(err)
+	}
+	return result
+}
+
+// drop and creates a new database
+func createDatabase() {
+	if sqlConnStr == "" {
+		panic("The database was not initialized. Call 'InitializeDatabase' first and then try again.")
+	}
+	db, err := sql.Open("mysql", sqlConnStr)
+	if err != nil {
+		panic(err)
+	}
+
+	database = db
+
+	runSql("drop-database")
+	runSql("create-database")
+	runSql("use-database")
+	runSql("create-titles-table")
+	runSql("create-trigrams-table")
+}
+
+func Connect(databaseName string, create bool) {
+	if create {
+		createDatabase()
+	} else {
+		db, err := sql.Open("mysql", sqlConnStr + databaseName)
+		if err != nil {
+			panic(err)
+		}
+		database = db
+	}
+
+}
+
 // returns all news-ids of a trigram
 func getIdsOfTrigram(trigram string) []int {
-	db, err := sql.Open("mysql", user+passwd+"@/trigramnews")
-	if err != nil {
-		panic(err)
+
+	if sqlConnStr == "" {
+		panic("Database not initialized")
 	}
-	dot, err := dotsql.LoadFromFile("queries.sql")
-	if err != nil {
-		panic(err)
-	}
-	rows, err := dot.Query(db, "select-titleids-from-trigram", trigram)
-	if err != nil {
-		panic(err)
-	}
+
+	rows := querySql("select-titleids-from-trigram", trigram)
+
 	var ids []int
 	for rows.Next() {
 		var id_string string
@@ -91,18 +125,12 @@ func getIdsOfTrigram(trigram string) []int {
 
 // returns news-title with this id
 func getNewsTitle(id int) string {
-	db, err := sql.Open("mysql", user+passwd+"@/trigramnews")
-	if err != nil {
-		panic(err)
+
+	if sqlConnStr == "" {
+		panic("Database not initialized")
 	}
-	dot, err := dotsql.LoadFromFile("queries.sql")
-	if err != nil {
-		panic(err)
-	}
-	rows, err := dot.Query(db, "select-title", id)
-	if err != nil {
-		panic(err)
-	}
+
+	rows := querySql("select-title", id)
 	var title string
 	for rows.Next() {
 		if err := rows.Scan(&title); err != nil {
@@ -114,38 +142,24 @@ func getNewsTitle(id int) string {
 
 // saves trigram with this id
 func putTrigram(trigram string, id int) {
-	db, err := sql.Open("mysql", user+passwd+"@/trigramnews")
-	if err != nil {
-		panic(err)
+
+	if sqlConnStr == "" {
+		panic("Database not initialized")
 	}
-	dot, err := dotsql.LoadFromFile("queries.sql")
-	if err != nil {
-		panic(err)
-	}
-	_, err = dot.Exec(db, "insert-trigram", id, trigram)
-	if err != nil {
-		panic(err)
-	}
+
+	runSql("insert-trigram", id, trigram)
 }
 
 // saves a new news title, returns id
 func postNews(title string) int {
-	db, err := sql.Open("mysql", user+passwd+"@/trigramnews")
-	if err != nil {
-		panic(err)
+
+	if sqlConnStr == "" {
+		panic("Database not initialized")
 	}
-	dot, err := dotsql.LoadFromFile("queries.sql")
-	if err != nil {
-		panic(err)
-	}
-	_, err = dot.Query(db, "insert-title", title)
-	if err != nil {
-		panic(err)
-	}
-	rows, err := dot.Query(db, "select-titleid-by-name", title)
-	if err != nil {
-		panic(err)
-	}
+
+	runSql("insert-title", title)
+	rows := querySql("select-titleid-by-name", title)
+
 	var id_string string
 	for rows.Next() {
 		if err := rows.Scan(&id_string); err != nil {
