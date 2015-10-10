@@ -14,17 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package data
 
 import (
-	"fmt"
-	"/ngram"
+	"io/ioutil"
+	"strings"
 )
 
-func main() {
-	// Read a News Title from stdin
-	var input string
-	fmt.Scanln(&input)
-	// Print Ngrams for given News Title
-	fmt.Println(ngram.BuildNGram(input, 3))
+func ReadFile(fileName string) string {
+	dataArray, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		panic(err)
+	}
+
+	return string(dataArray)
+}
+
+func ExtractNewsLine(content string) []string {
+	result := strings.Split(content, "\n")
+
+	for count, elem := range result {
+		result[count] = elem[strings.IndexAny(elem, "\t") + 1:]
+	}
+
+	return result
 }
