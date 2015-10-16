@@ -18,7 +18,7 @@ package main
 
 import (
 	"fmt"
-	"/ngram"
+	"github.com/ibiBgOR/GoTrimapNews/ngram"
 )
 
 func main() {
