@@ -100,7 +100,7 @@ func Connect(databaseName string, create bool) {
 }
 
 // returns all news-ids of a trigram
-func getIdsOfTrigram(trigram string) []int {
+func GetIdsOfTrigram(trigram string) []int {
 
 	if sqlConnStr == "" {
 		panic("Database not initialized")
@@ -124,7 +124,7 @@ func getIdsOfTrigram(trigram string) []int {
 }
 
 // returns news-title with this id
-func getNewsTitle(id int) string {
+func GetNewsTitle(id int) string {
 
 	if sqlConnStr == "" {
 		panic("Database not initialized")
@@ -141,7 +141,7 @@ func getNewsTitle(id int) string {
 }
 
 // saves trigram with this id
-func putTrigram(trigram string, id int) {
+func PutTrigram(trigram string, id int) {
 
 	if sqlConnStr == "" {
 		panic("Database not initialized")
@@ -151,7 +151,7 @@ func putTrigram(trigram string, id int) {
 }
 
 // saves a new news title, returns id
-func postNews(title string) int {
+func PostNews(title string) int {
 
 	if sqlConnStr == "" {
 		panic("Database not initialized")
@@ -171,4 +171,24 @@ func postNews(title string) int {
 		panic(err)
 	}
 	return id
+}
+
+func GetTrigramsByTitle(title string) []string {
+
+	if sqlConnStr == "" {
+		panic("Database not initialized")
+	}
+
+	rows := querySql("select-all-trigrams-by-title", title)
+
+	var result []string;
+	for rows.Next() {
+		var nextElement string;
+		if err := rows.Scan(&nextElement); err != nil {
+			panic(err)
+		}
+		result = append(result, nextElement)
+	}
+
+	return result
 }

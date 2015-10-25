@@ -18,6 +18,7 @@ package data
 
 import (
 	"testing"
+	"fmt"
 )
 
 func TestCreateDatabase(t *testing.T) {
@@ -33,8 +34,8 @@ func TestTitle(t *testing.T) {
 		"»",
 	}
 	for _, c := range cases {
-		newsID := postNews(c)
-		got := getNewsTitle(newsID)
+		newsID := PostNews(c)
+		got := GetNewsTitle(newsID)
 		if got != c {
 			t.Errorf("save and read title: \n saved:  %q,\n got:     %q", c, got)
 		}
@@ -53,11 +54,11 @@ func TestTrigrams(t *testing.T) {
 	}
 	for _, c := range cases {
 		for _, tri := range c.trigrams {
-			putTrigram(tri, c.id)
+			PutTrigram(tri, c.id)
 		}
 
 		for _, tri := range c.trigrams {
-			ids := getIdsOfTrigram(tri)
+			ids := GetIdsOfTrigram(tri)
 			contains := false
 			for _, id := range ids {
 				if id == c.id {
@@ -70,4 +71,27 @@ func TestTrigrams(t *testing.T) {
 		}
 
 	}
+}
+
+func TestGetTrigramsByTitle(t *testing.T) {
+	InitializeDatabase("root", "")
+	createDatabase()
+
+	cases := []struct {
+		trigrams []string
+		newsTitle string
+	}{
+		{[]string{"Hel", "ell", "llo"}, "Hello"},
+		{[]string{"Tes", "est"}, "Test"},
+		{[]string{"Wie", "ied", "ede", "der"}, "Wieder"},
+	}
+
+	for _, c := range cases {
+		id := PostNews(c.newsTitle)
+		for _, tri := range c.trigrams {
+			PutTrigram(tri, id)
+		}
+	}
+
+	fmt.Printf("%v", GetTrigramsByTitle("Test"))
 }

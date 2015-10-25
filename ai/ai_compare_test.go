@@ -76,3 +76,36 @@ func TestCosineSimilarity_NotSimilar (t *testing.T) {
 	}
 
 }
+
+func TestNormalizeTwoVectors(t *testing.T) {
+	v_1 := []element {
+		element{1, "Hel"},
+		element{1, "ell"},
+		element{1, "llo"},
+	}
+	v_2 := []element {
+		element{1, "Hel"},
+		element{1, "ell"},
+		element{1, "llo"},
+	}
+	/*v_2 := []element {
+		element{1, "Hel"},
+		element{1, "ell"},
+		element{1, "llo"},
+		element{1, "lo "},
+		element{1, "o W"},
+		element{1, " Wo"},
+		element{1, "Wor"},
+		element{1, "orl"},
+		element{1, "rld"},
+	}*/
+
+	vec_1, vec_2 := normalizeTwoVectors(v_1, v_2)
+
+	for count := range(vec_1) {
+		if vec_1[count] != vec_2[count] {
+			t.Logf("The two result vectors are not the same. Vector 1: '%v' Vector 2: '%v'", vec_1, vec_2)
+			t.Fail()
+		}
+	}
+}

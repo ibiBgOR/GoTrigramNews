@@ -27,3 +27,5 @@ SELECT id FROM trigrams WHERE trigram = ?;
 SELECT title FROM titles WHERE id = ? LIMIT 1;
 -- name: select-titleid-by-name
 SELECT id FROM titles WHERE title = ? LIMIT 1;
+-- name: select-all-trigrams-by-title
+SELECT trigram FROM trigrams as tg, titles as ti WHERE tg.id = ti.id AND ti.title = ?;
