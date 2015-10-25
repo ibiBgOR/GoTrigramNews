@@ -13,14 +13,16 @@ CREATE TABLE IF NOT EXISTS titles (
 -- name: create-trigrams-table
 CREATE TABLE IF NOT EXISTS trigrams ( 
 	id INTEGER NOT NULL, 
-	trigram CHARACTER(3) NOT NULL, 
+	trigram CHARACTER(3) NOT NULL,
+	occurrence INTEGER NOT NULL DEFAULT 1,
 	UNIQUE (id, trigram), 
 	FOREIGN KEY (id) REFERENCES titles(id)
 );
 -- name: insert-title
 INSERT INTO titles (title) VALUES(?);
 -- name: insert-trigram
-INSERT INTO trigrams (id, trigram) VALUES(?, ?);
+INSERT INTO trigrams (id, trigram, occurrence) VALUES(?, ?, 1)
+	ON DUPLICATE KEY UPDATE occurrence = occurrence + 1;
 -- name: select-titleids-from-trigram
 SELECT id FROM trigrams WHERE trigram = ?;
 -- name: select-title
@@ -28,4 +30,6 @@ SELECT title FROM titles WHERE id = ? LIMIT 1;
 -- name: select-titleid-by-name
 SELECT id FROM titles WHERE title = ? LIMIT 1;
 -- name: select-all-trigrams-by-title
-SELECT trigram FROM trigrams as tg, titles as ti WHERE tg.id = ti.id AND ti.title = ?;
+SELECT tg.trigram, tg.occurrence FROM trigrams as tg, titles as ti WHERE tg.id = ti.id AND ti.title = ?;
+-- name: count-all-titles
+SELECT count(id) FROM titles

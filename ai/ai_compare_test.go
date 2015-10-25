@@ -78,15 +78,15 @@ func TestCosineSimilarity_NotSimilar (t *testing.T) {
 }
 
 func TestNormalizeTwoVectors(t *testing.T) {
-	v_1 := []element {
-		element{1, "Hel"},
-		element{1, "ell"},
-		element{1, "llo"},
+	v_1 := []Vector_element {
+		Vector_element{1, "Hel"},
+		Vector_element{1, "ell"},
+		Vector_element{1, "llo"},
 	}
-	v_2 := []element {
-		element{1, "Hel"},
-		element{1, "ell"},
-		element{1, "llo"},
+	v_2 := []Vector_element {
+		Vector_element{1, "Hel"},
+		Vector_element{1, "ell"},
+		Vector_element{1, "llo"},
 	}
 	/*v_2 := []element {
 		element{1, "Hel"},
@@ -100,7 +100,7 @@ func TestNormalizeTwoVectors(t *testing.T) {
 		element{1, "rld"},
 	}*/
 
-	vec_1, vec_2 := normalizeTwoVectors(v_1, v_2)
+	vec_1, vec_2 := NormalizeTwoVectors(v_1, v_2)
 
 	for count := range(vec_1) {
 		if vec_1[count] != vec_2[count] {

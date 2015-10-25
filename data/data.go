@@ -22,6 +22,7 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"strconv"
+	"github.com/ibiBgOR/GoTrimapNews/ai"
 )
 
 var sqlConnStr string = ""
@@ -45,7 +46,7 @@ func InitializeDatabase(user string, passwd string) {
 }
 
 func loadStatements() {
-	dot, err := dotsql.LoadFromFile("queries.sql")
+	dot, err := dotsql.LoadFromFile("data/queries.sql")
 	if err != nil {
 		panic(err)
 	}
@@ -173,7 +174,7 @@ func PostNews(title string) int {
 	return id
 }
 
-func GetTrigramsByTitle(title string) []string {
+func GetTrigramsByTitle(title string) []ai.Vector_element {
 
 	if sqlConnStr == "" {
 		panic("Database not initialized")
@@ -181,14 +182,38 @@ func GetTrigramsByTitle(title string) []string {
 
 	rows := querySql("select-all-trigrams-by-title", title)
 
-	var result []string;
+	var result []ai.Vector_element;
 	for rows.Next() {
-		var nextElement string;
-		if err := rows.Scan(&nextElement); err != nil {
+		var nextElementName string;
+		var nextElementCount int;
+		if err := rows.Scan(&nextElementName, &nextElementCount); err != nil {
 			panic(err)
 		}
-		result = append(result, nextElement)
+		elem := ai.Vector_element{
+			Count: nextElementCount,
+			Ngram: nextElementName,
+		}
+		result = append(result, elem)
 	}
 
 	return result
+}
+
+func GetCountOfTitles() int {
+
+	if sqlConnStr == "" {
+		panic("Database not initialized")
+	}
+
+	rows := querySql("count-all-titles")
+
+	for rows.Next() {
+		var nextElement int;
+		if err := rows.Scan(&nextElement); err != nil {
+			panic(err)
+		}
+		return nextElement
+	}
+
+	return 0;
 }
