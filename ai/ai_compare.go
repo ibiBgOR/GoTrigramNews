@@ -27,7 +27,7 @@ type Vector_element struct {
 
 // We want to return two int-vectors which we can compare
 // Therefor we need to construct the vectors out of the given ones
-func NormalizeTwoVectors(vector_1 []Vector_element, vector_2 []Vector_element) ([]int, []int) {
+func NormalizeTwoVectors (vector_1 []Vector_element, vector_2 []Vector_element) ([]int, []int) {
 	// We check all containing ngrams (how often do they appear, do they appear in the other vector, ...)
 	var vector_1_new = vector_1
 	var vector_2_new = vector_2
@@ -116,3 +116,22 @@ func vectorNorm (vector []int) float64 {
 
 	return math.Sqrt(result)
 }
+
+func EuclideanDistance (vector_1 []int, vector_2 []int) float64 {
+	if len(vector_1) != len(vector_2) {
+		panic("The vectors does not have the same length.")
+	}
+	var result float64 = 0
+
+	for i, elem_1 := range vector_1 {
+		result += math.Pow(float64(elem_1 - vector_2[i]), 2)
+	}
+
+	result = math.Sqrt(result)
+
+	return result
+}
+
+/*func ManhattanDistance (vector_1 []int, vector_2 []int) float64 {
+
+}*/

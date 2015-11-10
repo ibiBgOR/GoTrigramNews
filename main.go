@@ -18,10 +18,13 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"github.com/ibiBgOR/GoTrimapNews/ngram"
 	"github.com/ibiBgOR/GoTrimapNews/data"
+	/*"github.com/ibiBgOR/GoTrimapNews/ai"*/
+	"github.com/tealeg/xlsx"
+	"strconv"
 	"github.com/ibiBgOR/GoTrimapNews/ai"
+	"log"
 )
 
 var database_name = "trigramnews"
@@ -58,10 +61,98 @@ func main() {
 	}
 	log.Println("Data saved.")
 
+	data.InitializeDatabase("root", "")
+	data.Connect(database_name, false)
+
 	titleCount := data.GetCountOfTitles()
 
+	// 6. Write to file
+	var file *xlsx.File
+	var sheet *xlsx.Sheet
+	var row *xlsx.Row
+	var cell *xlsx.Cell
+
+	file = xlsx.NewFile()
+	sheet, err := file.AddSheet("News Titles")
+	if err != nil {
+		fmt.Printf(err.Error())
+	}
+
+	// ########## First Sheet ##########
+	row = sheet.AddRow()
+	cell = row.AddCell()
+	cell.Value = "Id"
+	cell = row.AddCell()
+	cell.Value = "Title"
+
+	for i := 1; i <= titleCount; i++ {
+		row = sheet.AddRow()
+		cell = row.AddCell()
+		cell.Value = strconv.Itoa(i)
+		cell = row.AddCell()
+		cell.Value = data.GetNewsTitle(i)
+	}
+
+	// ########## Second Sheet ##########
+	sheet, err = file.AddSheet("Cosine Similarity")
+	if err != nil {
+		fmt.Printf(err.Error())
+	}
+
+	row = sheet.AddRow()
+	cell = row.AddCell()
+	for i := 1; i <= titleCount; i++ {
+		cell = row.AddCell()
+		cell.Value = strconv.Itoa(i)
+	}
+
+	// Data of the similarity
+	log.Printf("Start calculation")
+	for rowCount := 1; rowCount <= titleCount; rowCount++ {
+		row = sheet.AddRow()
+		cell = row.AddCell()
+		cell.Value = strconv.Itoa(rowCount)
+		for columnCount := 1; columnCount <= titleCount; columnCount++ {
+			cell = row.AddCell()
+			cell.Value = strconv.FormatFloat(calculateCosSim(rowCount, columnCount), 'f', 6, 64)
+		}
+	}
+	log.Printf("End calculation")
+
+	// ########## Third Sheet ##########
+	sheet, err = file.AddSheet("Euclidean Distance")
+	if err != nil {
+		fmt.Printf(err.Error())
+	}
+
+	row = sheet.AddRow()
+	cell = row.AddCell()
+	for i := 1; i <= titleCount; i++ {
+		cell = row.AddCell()
+		cell.Value = strconv.Itoa(i)
+	}
+
+	// Data of the similarity
+	log.Printf("Start calculation")
+	for rowCount := 1; rowCount <= titleCount; rowCount++ {
+		row = sheet.AddRow()
+		cell = row.AddCell()
+		cell.Value = strconv.Itoa(rowCount)
+		for columnCount := 1; columnCount <= titleCount; columnCount++ {
+			cell = row.AddCell()
+			cell.Value = strconv.FormatFloat(calculateEuclideanDist(rowCount, columnCount), 'f', 6, 64)
+		}
+	}
+	log.Printf("End calculation")
+
+	err = file.Save("Results.xlsx")
+	if err != nil {
+		fmt.Printf(err.Error())
+	}
+
+
 	// 6. Prepare to calculate distances
-	var title_1 int
+	/*var title_1 int
 	var title_2 int
 
 	fmt.Printf("Enter number for first title (%d): ", titleCount)
@@ -75,7 +166,21 @@ func main() {
 	fmt.Printf("+-----------------------------+\n" +
 	           "| Cosine similarity: %f |\n" +
 			   "+-----------------------------+",
-		ai.CosineSimilarity(ai.NormalizeTwoVectors(data_1, data_2)))
+		ai.CosineSimilarity(ai.NormalizeTwoVectors(data_1, data_2)))*/
+}
+
+func calculateCosSim(i1 int, i2 int) float64 {
+	data_1 := data.GetTrigramsByTitle(data.GetNewsTitle(i1))
+	data_2 := data.GetTrigramsByTitle(data.GetNewsTitle(i2))
+
+	return ai.CosineSimilarity(ai.NormalizeTwoVectors(data_1, data_2))
+}
+
+func calculateEuclideanDist(i1 int, i2 int) float64 {
+	data_1 := data.GetTrigramsByTitle(data.GetNewsTitle(i1))
+	data_2 := data.GetTrigramsByTitle(data.GetNewsTitle(i2))
+
+	return ai.EuclideanDistance(ai.NormalizeTwoVectors(data_1, data_2))
 }
 
 func main_read_line() {

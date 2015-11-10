@@ -56,7 +56,7 @@ func TestCosineSimilarity_Similar (t *testing.T) {
 	rounded_solution := 0.995664738306
 
 	if 1 - result > 1 - rounded_solution + 0.0000000001 { // We need to check the range, because of infinite resolution of the result
-		t.Log("Result expected to be near '" + strconv.FormatFloat(rounded_solution, 'f', 12, 64) + "' but was " + strconv.FormatFloat(result, 'f', 12, 64) + "'")
+		t.Log("Result expected to be near '" + strconv.FormatFloat(rounded_solution, 'f', 12, 64) + "' but was '" + strconv.FormatFloat(result, 'f', 12, 64) + "'")
 		t.Fail()
 	}
 
@@ -71,7 +71,7 @@ func TestCosineSimilarity_NotSimilar (t *testing.T) {
 
 
 	if result != 0.0 { // The result is 0, because the two vectors are not similar at all
-		t.Log("Result expected to be exact '0.00000' but was " + strconv.FormatFloat(result, 'f', 6, 64) + "'")
+		t.Log("Result expected to be exact '0.00000' but was '" + strconv.FormatFloat(result, 'f', 6, 64) + "'")
 		t.Fail()
 	}
 
@@ -108,4 +108,32 @@ func TestNormalizeTwoVectors(t *testing.T) {
 			t.Fail()
 		}
 	}
+}
+
+func TestEuclidianDistance_NotSimilar(t *testing.T) {
+
+	var vector_1 []int = []int{4, 1, -2}
+	var vector_2 []int = []int{2, 3, -1}
+
+	result := EuclideanDistance(vector_1, vector_2)
+
+	if result != 3.0 {
+		t.Log("Result expected to be exact '3.0' but was '" + strconv.FormatFloat(result, 'f', 6, 64) + "'")
+	}
+
+}
+
+func TestEuclidianDistance_Similar(t *testing.T) {
+
+	var vector_1 []int = []int{1, 2, 3}
+	var vector_2 []int = []int{1, 2, 3}
+
+	result := EuclideanDistance(vector_1, vector_2)
+
+
+	if result != 0.0 { // The result is 0, because the two vectors are similar
+		t.Log("Result expected to be exact '0.00000' but was '" + strconv.FormatFloat(result, 'f', 6, 64) + "'")
+		t.Fail()
+	}
+
 }
