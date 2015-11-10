@@ -18,7 +18,6 @@ package data
 
 import (
 	"fmt"
-	"strconv"
 	"testing"
 )
 
@@ -33,7 +32,7 @@ func TestReadFileNotAvaliable(t *testing.T) {
 }
 
 func TestReadFileAvailable(t *testing.T) {
-	len(ReadFile("test.file"))
+	ReadFile("test.file")
 }
 
 func TestExtractNews(t *testing.T) {
