@@ -18,6 +18,7 @@ package data
 
 import (
 	"io/ioutil"
+	"regexp"
 	"strings"
 )
 
@@ -31,11 +32,24 @@ func ReadFile(fileName string) string {
 }
 
 func ExtractNewsLine(content string) []string {
-	result := strings.Split(content, "\n")
+	result := RegSplit(content, "\r?\n")
 
 	for count, elem := range result {
-		result[count] = elem[strings.IndexAny(elem, "\t") + 1:]
+		result[count] = elem[strings.IndexAny(elem, "\t")+1:]
 	}
 
+	return result
+}
+
+func RegSplit(text string, delimeter string) []string {
+	reg := regexp.MustCompile(delimeter)
+	indexes := reg.FindAllStringIndex(text, -1)
+	laststart := 0
+	result := make([]string, len(indexes)+1)
+	for i, element := range indexes {
+		result[i] = text[laststart:element[0]]
+		laststart = element[1]
+	}
+	result[len(indexes)] = text[laststart:len(text)]
 	return result
 }

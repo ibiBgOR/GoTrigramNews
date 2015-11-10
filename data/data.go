@@ -21,8 +21,8 @@ import (
 	//	"github.com/gchaincl/gotic/fs"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
-	"strconv"
 	"github.com/ibiBgOR/GoTrimapNews/ai"
+	"strconv"
 )
 
 var sqlConnStr string = ""
@@ -33,7 +33,7 @@ type stmtFunc func(string) sql.Result
 
 var database *sql.DB
 
-var statementsFile *dotsql.DotSql;
+var statementsFile *dotsql.DotSql
 
 func InitializeDatabase(user string, passwd string) {
 	sqlConnStr = user
@@ -46,7 +46,7 @@ func InitializeDatabase(user string, passwd string) {
 }
 
 func loadStatements() {
-	dot, err := dotsql.LoadFromFile("data/queries.sql")
+	dot, err := dotsql.LoadFromFile("queries.sql")
 	if err != nil {
 		panic(err)
 	}
@@ -91,7 +91,7 @@ func Connect(databaseName string, create bool) {
 	if create {
 		createDatabase()
 	} else {
-		db, err := sql.Open("mysql", sqlConnStr + databaseName)
+		db, err := sql.Open("mysql", sqlConnStr+databaseName)
 		if err != nil {
 			panic(err)
 		}
@@ -182,10 +182,10 @@ func GetTrigramsByTitle(title string) []ai.Vector_element {
 
 	rows := querySql("select-all-trigrams-by-title", title)
 
-	var result []ai.Vector_element;
+	var result []ai.Vector_element
 	for rows.Next() {
-		var nextElementName string;
-		var nextElementCount int;
+		var nextElementName string
+		var nextElementCount int
 		if err := rows.Scan(&nextElementName, &nextElementCount); err != nil {
 			panic(err)
 		}
@@ -208,12 +208,12 @@ func GetCountOfTitles() int {
 	rows := querySql("count-all-titles")
 
 	for rows.Next() {
-		var nextElement int;
+		var nextElement int
 		if err := rows.Scan(&nextElement); err != nil {
 			panic(err)
 		}
 		return nextElement
 	}
 
-	return 0;
+	return 0
 }
