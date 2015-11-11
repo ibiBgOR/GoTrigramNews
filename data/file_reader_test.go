@@ -17,38 +17,32 @@ limitations under the License.
 package data
 
 import (
+	"fmt"
 	"testing"
-    "strconv"
-    "fmt"
 )
 
 func TestReadFileNotAvaliable(t *testing.T) {
 	defer func() {
-        if r := recover(); r != nil {
-            t.Log("An error occured since the file cannot be found. But we expected this!")
-        }
-    }()
+		if r := recover(); r != nil {
+			t.Log("An error occured since the file cannot be found. But we expected this!")
+		}
+	}()
 
 	ReadFile("i_am_not.here")
 }
 
 func TestReadFileAvailable(t *testing.T) {
-	result := len(ReadFile("test.file"))
-
-    if result != 42 { // Note that a new line equals two bytes/characters (\n)
-        t.Log("The result has not the expected size of 42 != " + strconv.Itoa(result))
-        t.Fail()
-    }
+	ReadFile("test.file")
 }
 
 func TestExtractNews(t *testing.T) {
-    expected := []string {"Hello World\r", "this is a test\r", "file"}
-    resulted := ExtractNewsLine(ReadFile("test.file"))
+	expected := []string{"Hello World", "this is a test", "file"}
+	resulted := ExtractNewsLine(ReadFile("test.file"))
 
-    for count, element := range expected {
-        if resulted[count] != element {
-            fmt.Println("Result is not the same as expected. Expected: '", []byte(element), "'\nbut got: '", []byte(resulted[count]), "'")
-            t.Fail()
-        }
-    }
+	for count, element := range expected {
+		if resulted[count] != element {
+			fmt.Println("Result is not the same as expected. Expected: '", []byte(element), "'\nbut got: '", []byte(resulted[count]), "'")
+			t.Fail()
+		}
+	}
 }
