@@ -17,7 +17,6 @@ limitations under the License.
 package data
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -41,7 +40,7 @@ func TestExtractNews(t *testing.T) {
 
 	for count, element := range expected {
 		if resulted[count] != element {
-			fmt.Println("Result is not the same as expected. Expected: '", []byte(element), "'\nbut got: '", []byte(resulted[count]), "'")
+			t.Log("Result is not the same as expected. Expected: '", []byte(element), "'\nbut got: '", []byte(resulted[count]), "'")
 			t.Fail()
 		}
 	}
