@@ -45,8 +45,10 @@ func main() {
 	}
 
 	if !*param_cosine {
-		for _, match := range bestmatches.GetBestMatches(*param_title, *param_count) {
-			fmt.Println(match)
+		if len(*param_title) > 0 {
+			for _, match := range bestmatches.GetBestMatches(*param_title, *param_count) {
+				fmt.Println(match)
+			}
 		}
 	}
 

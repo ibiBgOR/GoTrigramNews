@@ -46,14 +46,15 @@ func GetBestMatches(title string, count int) []string {
 	}
 
 	// now sort according to the count
-	bestMatches := (SortByFrequency(trigram_matches, frequencies))
-	for i := 0; i < count; i += 1 {
-		bestMatches = append(bestMatches, trigram_matches[i])
+	sorted := SortByFrequency(trigram_matches, frequencies)
+	return_val := []int{}
+	for i := 0; i <= count; i += 1 {
+		return_val = append(return_val, sorted[i])
 	}
 
 	// get the according titles
-	var titles []string
-	for id := range bestMatches {
+	titles := []string{}
+	for id := range return_val {
 		titles = append(titles, data.GetNewsTitle(id))
 	}
 
