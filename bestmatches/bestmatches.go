@@ -35,6 +35,16 @@ func GetBestMatches(title string, count int) []string {
 
 	// TODO: now get the *count* most frequent news ids
 	var frequencies map[int]int
+
+	for _, id := range trigram_matches {
+		_, contains := frequencies[id]
+		if contains {
+			frequencies[id] += 1
+		} else {
+			frequencies[id] = 1
+		}
+	}
+
 	// now sort according to the count
 	bestMatches := (SortByFrequency(trigram_matches, frequencies))
 	for i := 0; i < count; i += 1 {

@@ -24,12 +24,17 @@ func TestSort(t *testing.T) {
 	matches := []int{1, 1, 2, 3, 3, 3, 3, 4, 4}
 	t.Log("unsorted: ", matches)
 
-	frequencies := map[int]int{
-		1: 2,
-		2: 1,
-		3: 4,
-		4: 4,
+	var frequencies map[int]int
+
+	for _, id := range matches {
+		_, contains := frequencies[id]
+		if contains {
+			frequencies[id] += 1
+		} else {
+			frequencies = append(frequencies, make(map[int]int{1: 1}))
+		}
 	}
+
 	sorted := SortByFrequency(matches, frequencies)
 	t.Log("sorted:   ", sorted)
 	RemoveDuplicates(&sorted)
