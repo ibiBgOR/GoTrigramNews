@@ -34,9 +34,8 @@ func GetBestMatches(title string, count int) []string {
 	}
 
 	// now get the *count* most frequent news ids
-	// TODO: sort by occurence and remove duplicates
-	sort.Ints(trigram_matches)
-	var bestMatches []int
+	var frequencies map[int]int
+	bestMatches := (SortByFrequency(trigram_matches, frequencies))
 	for i := 0; i < count; i += 1 {
 		bestMatches = append(bestMatches, trigram_matches[i])
 	}
@@ -48,4 +47,47 @@ func GetBestMatches(title string, count int) []string {
 	}
 
 	return titles
+}
+
+type IdFrequency struct {
+	Id        int
+	Frequency int
+}
+
+type ByFrequency []IdFrequency
+
+func (nf ByFrequency) Len() int      { return len(nf) }
+func (nf ByFrequency) Swap(i, j int) { nf[i], nf[j] = nf[j], nf[i] }
+func (nf ByFrequency) Less(i, j int) bool {
+	less := nf[i].Frequency > nf[j].Frequency
+	if nf[i].Frequency == nf[j].Frequency {
+		less = nf[i].Id < nf[j].Id
+	}
+	return less
+}
+
+func SortByFrequency(ids []int, frequencies map[int]int) []int {
+	nf := make(ByFrequency, len(ids))
+	for i, id := range ids {
+		nf[i] = IdFrequency{id, frequencies[id]}
+	}
+	sort.Sort(ByFrequency(nf))
+	sortedIds := make([]int, len(ids))
+	for i, nf := range nf {
+		sortedIds[i] = nf.Id
+	}
+	return sortedIds
+}
+
+func RemoveDuplicates(xs *[]int) {
+	found := make(map[int]bool)
+	j := 0
+	for i, x := range *xs {
+		if !found[x] {
+			found[x] = true
+			(*xs)[j] = (*xs)[i]
+			j++
+		}
+	}
+	*xs = (*xs)[:j]
 }
