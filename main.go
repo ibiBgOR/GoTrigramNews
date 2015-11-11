@@ -20,6 +20,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/ibiBgOR/GoTrimapNews/ai"
+	"github.com/ibiBgOR/GoTrimapNews/bestmatches"
 	"github.com/ibiBgOR/GoTrimapNews/data"
 )
 
