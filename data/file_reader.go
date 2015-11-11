@@ -17,10 +17,26 @@ limitations under the License.
 package data
 
 import (
+	"github.com/ibiBgOR/GoTrimapNews/ngram"
 	"io/ioutil"
 	"regexp"
 	"strings"
 )
+
+var database_name = "trigramnews"
+
+// reads a file and stores trigrams in database
+func ParseFile(filename string) {
+	content := ReadFile(filename)
+	news_lines := ExtractNewsLine(content)
+	Connect(database_name, true)
+	for _, line := range news_lines {
+		id := PostNews(line)
+		for _, trigram := range ngram.BuildNGram(line, 3) {
+			PutTrigram(trigram, id)
+		}
+	}
+}
 
 func ReadFile(fileName string) string {
 	dataArray, err := ioutil.ReadFile(fileName)
