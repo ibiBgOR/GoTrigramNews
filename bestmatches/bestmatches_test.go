@@ -24,7 +24,7 @@ func TestSort(t *testing.T) {
 	matches := []int{1, 1, 2, 3, 3, 3, 3, 4, 4}
 	t.Log("unsorted: ", matches)
 
-	frequencies := make(map[int]int{0: 0})
+	frequencies := map[int]int{0: 0}
 
 	for _, id := range matches {
 		_, contains := frequencies[id]
