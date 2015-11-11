@@ -27,8 +27,8 @@ func GetBestMatches(title string, count int) []string {
 	var trigram_matches []int
 
 	// first calculate ngrams of the search string
-	for trigram := range ngram.BuildNGram(title, 3) {
-		for match := range data.GetIdsOfTrigram(trigram) {
+	for _, trigram := range ngram.BuildNGram(title, 3) {
+		for _, match := range data.GetIdsOfTrigram(trigram) {
 			trigram_matches = append(trigram_matches, match)
 		}
 	}

@@ -32,8 +32,8 @@ func main() {
 	//	param_interactively := flag.Bool("i", false, "run interactively")
 	param_purge := flag.Bool("purge", false, "reinitialize the database, purging all existing data")
 	param_cosine := flag.Bool("cosine", false, "calculate CosineSimilarity instead of ngram-clusering")
-	//	param_title := flag.String("title", "", "print out similar news-titles")
-	//	param_count := flag.Int("n", 3, "how many similar news titles should be printed?")
+	param_title := flag.String("title", "", "print out similar news-titles")
+	param_count := flag.Int("n", 3, "how many similar news titles should be printed?")
 
 	flag.Parse()
 
@@ -42,6 +42,12 @@ func main() {
 
 	if len(*param_data_file) > 0 {
 		data.ParseFile(*param_data_file)
+	}
+
+	if !*param_cosine {
+		for _, match := range bestmatches.GetBestMatches(*param_title, *param_count) {
+			fmt.Println(match)
+		}
 	}
 
 	if *param_cosine {
