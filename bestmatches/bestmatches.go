@@ -25,17 +25,23 @@ import (
 // returns n=count titles matching to the title
 func GetBestMatches(title string, count int) []string {
 	var trigram_matches []int
+
+	// first calculate ngrams of the search string
 	for trigram := range ngram.BuildNGram(title, 3) {
 		for match := range data.GetIdsOfTrigram(trigram) {
 			trigram_matches = append(trigram_matches, match)
 		}
 	}
+
+	// now get the *count* most frequent news ids
 	// TODO: sort by occurence and remove duplicates
 	sort.Ints(trigram_matches)
 	var bestMatches []int
 	for i := 0; i < count; i += 1 {
 		bestMatches = append(bestMatches, trigram_matches[i])
 	}
+
+	// get the according titles
 	var titles []string
 	for id := range bestMatches {
 		titles = append(titles, data.GetNewsTitle(id))
