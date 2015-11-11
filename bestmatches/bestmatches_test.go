@@ -24,14 +24,14 @@ func TestSort(t *testing.T) {
 	matches := []int{1, 1, 2, 3, 3, 3, 3, 4, 4}
 	t.Log("unsorted: ", matches)
 
-	var frequencies map[int]int
+	frequencies := make(map[int]int{0: 0})
 
 	for _, id := range matches {
 		_, contains := frequencies[id]
 		if contains {
 			frequencies[id] += 1
 		} else {
-			frequencies = append(frequencies, make(map[int]int{1: 1}))
+			frequencies[id] = 1
 		}
 	}
 
