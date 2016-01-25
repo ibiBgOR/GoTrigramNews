@@ -10,5 +10,5 @@ load the following dependencies:
 ## Working on GoTrimapNews
 checkout the project in your go-workspace
 
-		go get github.com/ibiBgOR/GoTrimapNews
+		go get github.com/ibiBgOR/GoTrigramNews
 
